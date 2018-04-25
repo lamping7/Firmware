@@ -26,72 +26,11 @@ pipeline {
           def docker_snapdragon = "lorenzmeier/px4-dev-snapdragon:2017-12-29"
           def docker_clang = "px4io/px4-dev-clang:2018-03-30"
 
-          // fmu-v2_{default, lpe} and fmu-v3_{default, rtps}
-          // bloaty compare to last successful master build
-          builds["px4fmu-v2"] = {
-            node {
-              stage("Build Test px4fmu-v2") {
-                docker.image(docker_nuttx).inside('-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw') {
-                  stage("px4fmu-v2") {
-                    checkout scm
-                    sh "export"
-                    sh "make distclean"
-                    sh "ccache -z"
-                    sh "git fetch --tags"
-                    sh "make px4io-v2_default"
-                    sh "make nuttx_px4fmu-v2_default"
-                    // bloaty output and compare with last successful master
-                    sh "bloaty -d symbols -n 100 -s vm build/nuttx_px4fmu-v2_default/nuttx_px4fmu-v2_default.elf"
-                    sh "bloaty -d compileunits -n 100 -s vm build/nuttx_px4fmu-v2_default/nuttx_px4fmu-v2_default.elf"
-                    sh "wget --no-verbose -N https://s3.amazonaws.com/px4-travis/Firmware/master/nuttx_px4fmu-v2_default.elf"
-                    sh "bloaty -d symbols -n 100 -C full -s file build/nuttx_px4fmu-v2_default/nuttx_px4fmu-v2_default.elf -- nuttx_px4fmu-v2_default.elf"
-                    sh "make nuttx_px4fmu-v2_lpe"
-                    sh "make nuttx_px4fmu-v2_test"
-                    sh "make nuttx_px4fmu-v3_default"
-                    sh "bloaty -d symbols -n 100 -s vm build/nuttx_px4fmu-v3_default/nuttx_px4fmu-v3_default.elf"
-                    sh "bloaty -d compileunits -n 100 -s vm build/nuttx_px4fmu-v3_default/nuttx_px4fmu-v3_default.elf"
-                    sh "wget --no-verbose -N https://s3.amazonaws.com/px4-travis/Firmware/master/nuttx_px4fmu-v3_default.elf"
-                    sh "bloaty -d symbols -n 100 -C full -s vm build/nuttx_px4fmu-v3_default/nuttx_px4fmu-v3_default.elf -- nuttx_px4fmu-v3_default.elf"
-                    sh "make nuttx_px4fmu-v3_rtps"
-                    sh "make sizes"
-                    sh "ccache -s"
-                    archiveArtifacts(allowEmptyArchive: true, artifacts: 'build/**/*.px4, build/**/*.elf', fingerprint: true, onlyIfSuccessful: true)
-                    sh "make distclean"
-                  }
-                }
-              }
-            }
-          }
-
-          // nuttx default targets that are archived and uploaded to s3
-          for (def option in ["px4fmu-v4", "px4fmu-v4pro", "px4fmu-v5", "aerofc-v1", "aerocore2", "auav-x21", "crazyflie", "mindpx-v2", "nxphlite-v3", "tap-v1"]) {
-            def node_name = "${option}"
-            builds[node_name] = createBuildNode(docker_nuttx, "${node_name}_default")
-          }
-
-          // other nuttx default targets
-          for (def option in ["px4-same70xplained-v1", "px4-stm32f4discovery", "px4cannode-v1", "px4esc-v1", "px4nucleoF767ZI-v1", "s2740vc-v1"]) {
-            def node_name = "${option}"
-            builds[node_name] = createBuildNode(docker_nuttx, "${node_name}_default")
-          }
-
-          builds["sitl_rtps"] = createBuildNode(docker_base, 'posix_sitl_rtps')
-          builds["sitl (GCC 7)"] = createBuildNode(docker_arch, 'posix_sitl_default')
-
-          builds["rpi"] = createBuildNode(docker_rpi, 'posix_rpi_cross')
-          builds["bebop"] = createBuildNode(docker_rpi, 'posix_bebop_default')
-
-          builds["ocpoc"] = createBuildNode(docker_armhf, 'posix_ocpoc_ubuntu')
-
-          // snapdragon (eagle_default)
-          builds["eagle (linux)"] = createBuildNodeDockerLogin(docker_snapdragon, 'docker_hub_dagar', 'posix_eagle_default')
-          builds["eagle (qurt)"] = createBuildNodeDockerLogin(docker_snapdragon, 'docker_hub_dagar', 'qurt_eagle_default')
-
           // posix_sitl_default with package
           builds["sitl"] = {
             node {
               stage("Build Test sitl") {
-                docker.image(docker_base).inside('-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw') {
+                docker.image(docker_ros).inside('-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw') {
                   stage("sitl") {
                     checkout scm
                     sh "export"
@@ -105,34 +44,6 @@ pipeline {
                     sh "make distclean"
                   }
                 }
-              }
-            }
-          }
-
-          // MAC OS posix_sitl_default
-          builds["sitl (OSX)"] = {
-            node('mac') {
-              stage("sitl (OSX)") {
-                checkout scm
-                sh "export"
-                sh "make distclean"
-                sh "ccache -z"
-                sh "make posix_sitl_default"
-                sh "ccache -s"
-              }
-            }
-          }
-
-          // MAC OS nuttx_px4fmu-v4pro_default
-          builds["px4fmu-v4pro (OSX)"] = {
-            node('mac') {
-              stage("px4fmu-v4pro (OSX)") {
-                checkout scm
-                sh "export"
-                sh "make distclean"
-                sh "ccache -z"
-                sh "make nuttx_px4fmu-v4pro_default"
-                sh "ccache -s"
               }
             }
           }
