@@ -100,16 +100,20 @@ install(TARGETS px4 DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(
 	DIRECTORY
-		${PROJECT_SOURCE_DIR}/ROMFS DESTINATION
-		${PROJECT_SOURCE_DIR}/posix-configs DESTINATION
-		${PROJECT_SOURCE_DIR}/launch DESTINATION
-		${PROJECT_SOURCE_DIR}/test DESTINATION
+		${PROJECT_SOURCE_DIR}/ROMFS
+		${PROJECT_SOURCE_DIR}/posix-configs
+		${PROJECT_SOURCE_DIR}/launch
+		${PROJECT_SOURCE_DIR}/test
 		${PROJECT_SOURCE_DIR}/Tools/ecl_ekf
 	DESTINATION
 		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
 	)
 
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/build/posix_sitl_default/build_gazebo DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/build/posix_sitl_default/build_gazebo
+        FILES_MATCHING PATTERN "*.so"
+    )
+
 install(
-	FILES ${PROJECT_SOURCE_DIR}/Tools/jMAVSim/out/production/jmavsim_run.jar
-	DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+	FILES ${PROJECT_SOURCE_DIR}/Tools/sitl_gazebo/models/iris/iris.sdf
+	DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools/sitl_gazebo/models/iris
 	)

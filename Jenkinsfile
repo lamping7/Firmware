@@ -99,6 +99,7 @@ pipeline {
                     sh "ccache -z"
                     sh "make posix_sitl_default"
                     sh "ccache -s"
+                    sh "make posix_sitl_default sitl_gazebo"
                     sh "make posix_sitl_default package"
                     stash name: "px4_sitl_package", includes: "build/**/*.zip"
                     sh "make distclean"
