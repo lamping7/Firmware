@@ -109,11 +109,34 @@ install(
 		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
 	)
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/build/posix_sitl_default/build_gazebo DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/build/posix_sitl_default/build_gazebo
-        FILES_MATCHING PATTERN "*.so"
+#
+# sitl_gazebo ROS simulation files
+#
+
+install(
+	DIRECTORY
+		${PROJECT_SOURCE_DIR}/build/posix_sitl_default/build_gazebo
+	DESTINATION
+		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/build/posix_sitl_default
+    FILES_MATCHING
+        PATTERN "CMakeFiles" EXCLUDE
+        PATTERN "*.so" # all plugins
     )
 
 install(
-	FILES ${PROJECT_SOURCE_DIR}/Tools/sitl_gazebo/models/iris/iris.sdf
-	DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools/sitl_gazebo/models/iris
+	DIRECTORY
+		${PROJECT_SOURCE_DIR}/Tools/sitl_gazebo
+	DESTINATION
+		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools
+	FILES_MATCHING
+		PATTERN "cmake" EXCLUDE
+		PATTERN "external" EXCLUDE
+		PATTERN "include" EXCLUDE
+		PATTERN "scripts" EXCLUDE
+		PATTERN "src" EXCLUDE
+		REGEX "models\/(.+)*" # all models (includes meshes, etc.), messages, and worlds
+		#PATTERN "msgs/*"
+		PATTERN "worlds/*"
+		PATTERN "CMakeLists.txt" # required for ROS to find this package
+		PATTERN "package.xml"
 	)
