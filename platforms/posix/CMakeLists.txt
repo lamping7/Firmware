@@ -118,10 +118,10 @@ install(
 		${PROJECT_SOURCE_DIR}/build/posix_sitl_default/build_gazebo
 	DESTINATION
 		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/build/posix_sitl_default
-    FILES_MATCHING
-        PATTERN "CMakeFiles" EXCLUDE
-        PATTERN "*.so" # all plugins
-    )
+	FILES_MATCHING
+		PATTERN "CMakeFiles" EXCLUDE
+		PATTERN "*.so" # all plugins
+	)
 
 install(
 	DIRECTORY
@@ -139,4 +139,9 @@ install(
 		PATTERN "worlds/*"
 		PATTERN "CMakeLists.txt" # required for ROS to find this package
 		PATTERN "package.xml"
+	)
+
+install(
+	FILES ${PROJECT_SOURCE_DIR}/Tools/setup_gazebo.bash
+	DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools
 	)
