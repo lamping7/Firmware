@@ -141,7 +141,7 @@ install(
 		PATTERN "scripts" EXCLUDE
 		PATTERN "src" EXCLUDE
 		REGEX "models\/(.+)*" # all models (includes meshes, etc.), messages, and worlds
-		#PATTERN "msgs/*"
+		# PATTERN "msgs/*"
 		PATTERN "worlds/*"
 		PATTERN "CMakeLists.txt" # required for ROS to find this package
 		PATTERN "package.xml"
