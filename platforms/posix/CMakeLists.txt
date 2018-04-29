@@ -105,9 +105,10 @@ install(
 
 install(
 	DIRECTORY
-		${PROJECT_SOURCE_DIR}/ROMFS
-		${PROJECT_SOURCE_DIR}/posix-configs
+		${PROJECT_SOURCE_DIR}/integrationtests
 		${PROJECT_SOURCE_DIR}/launch
+		${PROJECT_SOURCE_DIR}/posix-configs
+		${PROJECT_SOURCE_DIR}/ROMFS
 		${PROJECT_SOURCE_DIR}/test
 		${PROJECT_SOURCE_DIR}/Tools/ecl_ekf
 	DESTINATION
