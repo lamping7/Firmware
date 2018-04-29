@@ -69,7 +69,7 @@ pipeline {
             sh 'unzip build/posix_sitl_default/px4-posix_sitl_default*.zip'
             sh 'chmod +x px4-posix_sitl_default*/bin/px4'
             sh 'cd px4-posix_sitl_default*/share/px4'
-            sh 'bash test/rostest_px4_run.sh mavros_posix_test_mission.test mission:=vtol_new_1 vehicle:=standard_vtol'
+            sh 'bash test/rostest_px4_run.sh $(pwd)/test/mavros_posix_test_mission.test mission:=vtol_new_1 vehicle:=standard_vtol'
             sh 'bash Tools/ecl_ekf/process_logdata_ekf.py `find . -name *.ulg -print -quit`'
           }
 //          post {
