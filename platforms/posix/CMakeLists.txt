@@ -96,7 +96,12 @@ endif()
 # install
 #
 
-install(TARGETS px4 DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(
+	TARGETS
+		px4
+	DESTINATION
+		${CMAKE_INSTALL_BINDIR}
+	)
 
 install(
 	DIRECTORY
@@ -142,6 +147,16 @@ install(
 	)
 
 install(
-	FILES ${PROJECT_SOURCE_DIR}/Tools/setup_gazebo.bash
-	DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools
+	FILES
+		${PROJECT_SOURCE_DIR}/Tools/setup_gazebo.bash
+	DESTINATION
+		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools
+	)
+
+install(
+	FILES
+		${PROJECT_SOURCE_DIR}/CMakeLists.txt
+		${PROJECT_SOURCE_DIR}/package.xml
+	DESTINATION
+		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
 	)
