@@ -1,8 +1,8 @@
 #! /bin/bash
 
-PX4_BIN_DIR=/usr/bin
-PX4_SRC_DIR=/usr/share/px4
-
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+PX4_SRC_DIR=${DIR}/..
+PX4_BIN_SIR=${DIR}/../../../bin
 source /opt/ros/kinetic/setup.bash
 source ${PX4_SRC_DIR}/Tools/setup_gazebo.bash ${PX4_SRC_DIR} ${PX4_SRC_DIR}/build/posix_sitl_default
 
