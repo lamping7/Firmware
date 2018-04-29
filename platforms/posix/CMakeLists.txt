@@ -105,12 +105,11 @@ install(
 
 install(
 	DIRECTORY
-		${PROJECT_SOURCE_DIR}/integrationtests
+		${PROJECT_SOURCE_DIR}/integrationtests # need for tests
 		${PROJECT_SOURCE_DIR}/launch
 		${PROJECT_SOURCE_DIR}/posix-configs
 		${PROJECT_SOURCE_DIR}/ROMFS
 		${PROJECT_SOURCE_DIR}/test
-		${PROJECT_SOURCE_DIR}/Tools/ecl_ekf
 	DESTINATION
 		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
 	)
@@ -125,8 +124,8 @@ install(
 	DESTINATION
 		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/build/posix_sitl_default
 	FILES_MATCHING
-		PATTERN "CMakeFiles" EXCLUDE
-		PATTERN "*.so" # all plugins
+		PATTERN "CMakeFiles" EXCLUDE # need to exclude as tmp files are in here
+		PATTERN "*.so" # all plugins, only about 1/2 are needed for our testing
 	)
 
 install(
@@ -140,24 +139,31 @@ install(
 		PATTERN "include" EXCLUDE
 		PATTERN "scripts" EXCLUDE
 		PATTERN "src" EXCLUDE
-		REGEX "models\/(.+)*" # all models (includes meshes, etc.), messages, and worlds
-		# PATTERN "msgs/*"
+		REGEX "models\/(.+)*" # all models (includes meshes, etc.), messages, and worlds, not sure if we want all
+		# PATTERN "msgs/*" don't think this is needed
 		PATTERN "worlds/*"
 		PATTERN "CMakeLists.txt" # required for ROS to find this package
 		PATTERN "package.xml"
 	)
 
-install(
+install( # setup env vars, below script needs looked at, specifically the msgs (not needed)
 	FILES
 		${PROJECT_SOURCE_DIR}/Tools/setup_gazebo.bash
 	DESTINATION
 		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools
 	)
 
-install(
+install( # ROS can't find px4 without this
 	FILES
 		${PROJECT_SOURCE_DIR}/CMakeLists.txt
 		${PROJECT_SOURCE_DIR}/package.xml
 	DESTINATION
 		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+	)
+
+install( # keeps ecl_ekf in Tools subdir
+	DIRECTORY
+		${PROJECT_SOURCE_DIR}/Tools/ecl_ekf
+	DESTINATION
+		${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/Tools
 	)

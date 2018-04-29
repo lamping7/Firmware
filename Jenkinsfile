@@ -67,11 +67,13 @@ pipeline {
             sh 'make distclean; rm -rf .ros; rm -rf .gazebo'
             unstash 'px4_sitl_package'
             sh 'unzip build/posix_sitl_default/px4-posix_sitl_default*.zip'
-            sh 'chmod +x px4-posix_sitl_default*/bin/px4'
+            // need to have px4 in dir with CMakeLists and package.xml
             sh 'cp px4-posix_sitl_default*/bin/px4 px4-posix_sitl_default*/share/px4/'
+            // have to make executable for ROS
+            sh 'chmod +x px4-posix_sitl_default*/share/px4/px4'
             sh 'chmod +x px4-posix_sitl_default*/share/px4/integrationtests/python_src/px4_it/mavros/mission_test.py'
-            sh 'bash px4-posix_sitl_default*/share/px4/test/rostest_px4_run.sh --text mavros_posix_test_mission.test mission:=vtol_new_1 vehicle:=standard_vtol verbose:=true'
-            sh 'bash px4-posix_sitl_default*/share/px4/Tools/ecl_ekf/process_logdata_ekf.py `find . -name *.ulg -print -quit`'
+            sh 'bash px4-posix_sitl_default*/share/px4/test/rostest_px4_run.sh mavros_posix_test_mission.test mission:=vtol_new_1 vehicle:=standard_vtol'
+            sh 'python px4-posix_sitl_default*/share/px4/Tools/ecl_ekf/process_logdata_ekf.py `find . -name *.ulg -print -quit`'
           }
 //          post {
 //            always {
