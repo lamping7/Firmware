@@ -17,6 +17,7 @@ pipeline {
         sh 'make distclean'
         sh 'ccache -z'
         sh 'git fetch --tags'
+        sleep 600
         sh 'make px4_sitl_default'
         sh 'make px4_sitl_default sitl_gazebo'
         sh 'make px4_sitl_default package'
