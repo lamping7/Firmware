@@ -9,11 +9,10 @@ pipeline {
       agent {
         docker {
           image 'px4io/px4-dev-ros-kinetic:2019-02-14'
-          args '-u root -e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
+          args '-u root -e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE -e DISPLAY=:99'
         }
       }
       steps {
-        sh('echo $DISPLAY')
         sh 'export'
         sh 'make distclean'
         sh 'ccache -z'
@@ -110,10 +109,9 @@ def createTestNode(Map test_def) {
   return {
     node {
       cleanWs()
-      docker.image("px4io/px4-dev-ros-kinetic:2019-02-14").inside('-u root -e HOME=${WORKSPACE}') {
+      docker.image("px4io/px4-dev-ros-kinetic:2019-02-14").inside('-u root -e HOME=${WORKSPACE} -e DISPLAY=:99') {
         stage(test_def.name) {
           def test_ok = true
-          sh('echo $DISPLAY')
           sh('export')
 
           unstash('px4_sitl_package')
